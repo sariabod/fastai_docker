@@ -22,7 +22,6 @@ def pred_details(pred, stamps):
     
     return mask_group, stamp_group
 
-
 def build_input(vals, norm):
 
     vals = np.array(vals)
@@ -63,7 +62,4 @@ def build_input(vals, norm):
         total = total.astype(int)
         data[k] = total
 
-    return torch.tensor(data.transpose()[None], dtype=torch.float)
-
-
-
+    return torch.tensor(data.transpose()[None], dtype=torch.float)/255
