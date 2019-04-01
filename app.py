@@ -11,24 +11,21 @@ signal = get_segmentation_model('signal',[0,1])
 def index():
 
     html = "<h3>These are not the droids you are looking for....</h3>"
-    return html.format(fai=fai)
+    return html.format()
 
 
 @application.route("/predict", methods=['POST'])
 def predict():
     inputs = request.get_json()
-    
+    psi = inputs['psi'] 
 
-
-    img = torch.tensor(np.ones([1,100,3600]), dtype=torch.float)
-    pred = wave.predict(img)
-    pred = signal.predict(img)
-
-
+    #img = torch.tensor(np.ones([1,100,3600]), dtype=torch.float)
+    #pred = wave.predict(img)
+    #pred = signal.predict(img)
 
 
 
-    return jsonify(['hey'])
+    return jsonify(psi)
 
 
 if __name__ == "__main__":
