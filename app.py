@@ -17,15 +17,18 @@ def index():
 @application.route("/predict", methods=['POST'])
 def predict():
     inputs = request.get_json()
-    psi = inputs['psi'] 
+    data = inputs['data']
+    timestamp = np.array(list(zip(*data))[0])
+    psi = list(zip(*data))[1]
+    diff = list(zip(*data))[2]
 
-    #img = torch.tensor(np.ones([1,100,3600]), dtype=torch.float)
-    #pred = wave.predict(img)
-    #pred = signal.predict(img)
+    pred_signal = signal.predict(build_input(diff, 1000))
+    pred_wave = wave.predict(build_input(psi, 7000))
+    wave_group = pred_details(pred_wave, timestamp)
+    signal_group = pred_details(pred_signal, timestamp)
+    final_output = {"waves":wave_group, "signals":signal_group}
 
-
-
-    return jsonify(psi)
+    return jsonify(final_output)
 
 
 if __name__ == "__main__":

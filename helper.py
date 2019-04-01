@@ -20,8 +20,14 @@ def pred_details(pred, stamps):
     idx = np.where(mask!=0)[0]
     mask_group = np.split(mask[idx],np.where(np.diff(idx)!=1)[0]+1)
     stamp_group = np.split(stamps[idx],np.where(np.diff(idx)!=1)[0]+1)
-    
-    return mask_group, stamp_group
+
+    final_group = []
+    for k, v in enumerate(mask_group):
+        if sum(v) > 14:
+            x = [k,int(str(sum(v))), stamp_group[k][0], stamp_group[k][-1]]
+            final_group.append(x)
+
+    return final_group
 
 def build_input(vals, norm):
 
