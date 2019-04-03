@@ -18,6 +18,7 @@ def pred_details(pred, stamps):
     pred_n = pred_n.sum(axis=0)
     mask = np.where(pred_n < 50, 0, 1)
     idx = np.where(mask!=0)[0]
+    idx = idx[:-1]
     mask_group = np.split(mask[idx],np.where(np.diff(idx)!=1)[0]+1)
     stamp_group = np.split(stamps[idx],np.where(np.diff(idx)!=1)[0]+1)
 
