@@ -23,7 +23,7 @@ def predict():
     diff = list(zip(*data))[2]
 
     pred_signal = signal.predict(build_input(diff, 1000))
-    pred_wave = wave.predict(build_input(psi, 7000))
+    pred_wave = wave.predict(build_input(psi, 6000))
     wave_group = pred_details(pred_wave, timestamp)
     signal_group = pred_details(pred_signal, timestamp)
     final_output = {"waves":wave_group, "signals":signal_group}
