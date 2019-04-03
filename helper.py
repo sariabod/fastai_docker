@@ -52,14 +52,14 @@ def build_input(vals, norm):
             botv = v
             midv = n - v
         else:
-            if norm <= 1000:
+            if v == 100:
                 midv = 1
-                topv = 49
-                botv = 50
+                topv = 0
+                botv = 99
             else:
-                topv = 100 - n
+                midv = 1
+                topv = 99 - v
                 botv = v
-                midv = n - v
 
         start = np.full(topv, 255)
         middle = np.full(midv, 0)
