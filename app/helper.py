@@ -6,9 +6,7 @@ def get_segmentation_model(model, classes=[]):
        .split_none()
        .label_from_func(lambda x: Path('data/label/0.png'), classes=classes)
       )
-
     data = src.databunch(no_check=True).normalize(imagenet_stats)
-    #learn = unet_learner(data, models.resnet34).to_fp16()
     learn = unet_learner(data, models.resnet34)
     learn.load(model)
     return learn
