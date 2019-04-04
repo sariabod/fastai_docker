@@ -17,7 +17,12 @@ def index():
 @application.route("/predict", methods=['POST'])
 def predict():
     inputs = request.get_json()
-    data = inputs['data']
+
+    try:
+        data = inputs['data']
+    except KeyError as e:
+        return jsonify({'Malformed JSON':"Missing 'data' Key"}, status_code=401)
+
     timestamp = np.array(list(zip(*data))[0])
     psi = list(zip(*data))[1]
     diff = list(zip(*data))[2]
