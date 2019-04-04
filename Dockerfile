@@ -12,8 +12,12 @@ RUN apt-get update && apt-get install -y \
 
 # Create a working directory
 RUN mkdir /app
-ADD . /app
+ADD app /app
+RUN mkdir /root/.torch
+RUN mkdir /root/.torch/models
+ADD resnet34-333f7ec4.pth /root/.torch/models
 WORKDIR /app
+
 
 # Install Miniconda
 RUN curl -so ~/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && chmod +x ~/miniconda.sh && ~/miniconda.sh -b -p ~/miniconda && rm ~/miniconda.sh
@@ -43,7 +47,6 @@ RUN conda install -y -c anaconda \
     gunicorn \
     && conda clean -ya
 
-#RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends libgtk2.0-0 libcanberra-gtk-module  && sudo rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8000
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "app"]
+CMD ["gunicorn", "-b", "0.0.0.0:7500", "app"]
