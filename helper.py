@@ -25,7 +25,7 @@ def pred_details(pred, stamps):
 
     final_group = []
     for k, v in enumerate(mask_group):
-        if sum(v) > 14:
+        if sum(v) > 29:
             x = [k,int(str(sum(v))), stamp_group[k][0], stamp_group[k][-1]]
             final_group.append(x)
 

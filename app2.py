@@ -3,8 +3,8 @@ from helper import *
 
 application = Flask(__name__)
 
-wave = get_segmentation_model('wave3',[0,1])
-signal = get_segmentation_model('signal3',[0,1])
+wave = get_segmentation_model('wave2',[0,1])
+signal = get_segmentation_model('signal2',[0,1])
 
 
 @application.route("/")
@@ -32,4 +32,4 @@ def predict():
 
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0', port=8000)
+    application.run(host='0.0.0.0', port=8002)
