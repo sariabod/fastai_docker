@@ -3,8 +3,8 @@ from helper import *
 
 application = Flask(__name__)
 
-wave = get_segmentation_model('wave3',[0,1])
-signal = get_segmentation_model('signal3',[0,1])
+wave = get_segmentation_model('wave',[0,1])
+signal = get_segmentation_model('signal',[0,1])
 
 
 @application.route("/")
