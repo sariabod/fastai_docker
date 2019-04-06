@@ -11,25 +11,25 @@ def get_segmentation_model(model, classes=[]):
     learn.load(model)
     return learn
 
-def pred_details(pred, stamps):
+def pred_details(pred, stamps, vfilter, hfilter):
     for y in range(3600-len(stamps)):
         stamps = np.append(stamps, 0)
     pred_n = pred[1].numpy().squeeze()
     pred_n = pred_n.sum(axis=0)
-    mask = np.where(pred_n < 50, 0, 1)
+    mask = np.where(pred_n < vfilter, 0, 1)
     idx = np.where(mask!=0)[0]
     mask_group = np.split(mask[idx],np.where(np.diff(idx)!=1)[0]+1)
     stamp_group = np.split(stamps[idx],np.where(np.diff(idx)!=1)[0]+1)
 
     final_group = []
     for k, v in enumerate(mask_group):
-        if sum(v) > 29:
+        if sum(v) > hfilter:
             x = [k,int(str(sum(v))), stamp_group[k][0], stamp_group[k][-1]]
             final_group.append(x)
 
     return final_group
 
-def build_input(vals, norm):
+def build_input(vals, norm, raw=False):
 
     vals = np.array(vals)
     vals = np.round( (vals / norm) * 100 )
@@ -69,4 +69,7 @@ def build_input(vals, norm):
         total = total.astype(int)
         data[k] = total
 
-    return torch.tensor(data.transpose()[None], dtype=torch.float)/255
+    if raw:
+        return torch.tensor(data.transpose()[None], dtype=torch.float)
+    else:
+        return torch.tensor(data.transpose()[None], dtype=torch.float)/255

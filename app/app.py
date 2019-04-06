@@ -114,16 +114,15 @@ def predict():
 
     try:
         pred_signal = signal.predict(build_input(diff, 1000))
-        pred_wave = wave.predict(build_input(psi, 6000))
-        signal_group = pred_details(pred_signal, timestamp)
-        wave_group = pred_details(pred_wave, timestamp)
+        signal_group = pred_details(pred_signal, timestamp, 25, 15)
+        pred_wave = wave.predict(build_input(psi, 5000))
+        wave_group = pred_details(pred_wave, timestamp, 50, 30)
     except Exception as e:
         return Response(e, 400)
-
 
     final_output = {"waves":wave_group, "signals":signal_group}
     return jsonify(final_output)
 
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0', port=8000)
+    application.run(host='0.0.0.0', port=8000, debug=True)
