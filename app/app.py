@@ -105,8 +105,7 @@ def predict():
     try:
         preds = inputs['preds']
     except KeyError as e:
-        preds = False
-
+        preds = 0
 
     if len(data) > 3600:
         return Response('JSON Size Error : Too many records, MAX 3600', 400)
@@ -120,15 +119,19 @@ def predict():
 
     try:
         sig_input = build_input(diff, 1000)
-        sig_pred = signal.predict(torch.tensor(sig_input[None], dtype=torch.float)/255)
-        sig_group = pred_details(pred_signal, timestamp, 50, 29)
+        sig_pred = signal.predict(torch.tensor(sig_input, dtype=torch.float)/255)
+        sig_group = pred_details(sig_pred, timestamp, 50, 29)
         wave_input = build_input(psi, 5000)
-        wave_pred = wave.predict(torch.tensor(wave_input[None], dtype=torch.float)/255)
-        wave_group = pred_details(pred_wave, timestamp, 50, 29)
+        wave_pred = wave.predict(torch.tensor(wave_input, dtype=torch.float)/255)
+        wave_group = pred_details(wave_pred, timestamp, 50, 29)
     except Exception as e:
         return Response(e, 400)
 
-    final_output = {"waves":wave_group, "signals":signal_group}
+
+    if preds:
+        final_output = {"waves":wave_group, "signals":sig_group, "wave_pred":wave_pred[1].tolist(), "wave_input":wave_input.tolist(), "signal_pred":sig_pred[1].tolist(), "signal_input":sig_input.tolist()}
+    else:
+        final_output = {"waves":wave_group, "signals":sig_group}
 
 
     return jsonify(final_output)

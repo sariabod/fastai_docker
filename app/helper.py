@@ -68,5 +68,6 @@ def build_input(vals, norm, raw=False):
         total = np.concatenate((start,middle,bottom))
         total = total.astype(int)
         data[k] = total
-
-    return data.transpose()
+    data = data.transpose()
+    data = data[None]
+    return data
