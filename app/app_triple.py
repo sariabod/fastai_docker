@@ -2,11 +2,13 @@ from flask import Flask, request, jsonify, abort, Response
 from helper import *
 import os
 #os.environ['TORCH_MODEL_ZOO'] = '/app/data/models'
+import numpy as np
 
 application = Flask(__name__)
 
-wave = get_segmentation_model('wave',[0,1])
-signal = get_segmentation_model('signal',[0,1])
+#wave = get_segmentation_model('wave',[0,1])
+#signal = get_segmentation_model('signal',[0,1])
+triple = get_segmentation_model('triple',[0,1])
 
 @application.route("/")
 def index():
@@ -113,16 +115,20 @@ def predict():
         return Response('JSON Array Error : Mismatched Columns', 400)
 
     try:
-        pred_signal = signal.predict(build_input(diff, 1000))
-        signal_group = pred_details(pred_signal, timestamp, 50, 29)
-        pred_wave = wave.predict(build_input(psi, 5000))
-        wave_group = pred_details(pred_wave, timestamp, 50, 29)
+        pred_signal = build_input(diff, 1000, True)
+        pred_wave = build_input(psi, 5000, True)
+        flip = np.flip(pred_wave, axis=0)
+        pred_source = np.concatenate([pred_wave, pred_signal, flip])
+        pred_t = torch.tensor(pred_source[None], dtype=torch.float)/255
+        prediction = triple.predict(pred_t)
+        triple_group = pred_details(prediction, timestamp, 150, 29)
+
     except Exception as e:
         return Response(e, 400)
 
-    final_output = {"waves":wave_group, "signals":signal_group}
+    final_output = {"triple":triple_group}
     return jsonify(final_output)
 
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0', port=8000, debug=True)
+    application.run(host='0.0.0.0', port=8000)
