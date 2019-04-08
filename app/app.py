@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort, Response
 from helper import *
 import os
-#os.environ['TORCH_MODEL_ZOO'] = '/app/data/models'
+os.environ['TORCH_MODEL_ZOO'] = '/app/data/models'
 
 application = Flask(__name__)
 
@@ -102,6 +102,12 @@ def predict():
     except KeyError as e:
         return Response('Malformed JSON : Missing data Key', 400)
 
+    try:
+        preds = inputs['preds']
+    except KeyError as e:
+        preds = False
+
+
     if len(data) > 3600:
         return Response('JSON Size Error : Too many records, MAX 3600', 400)
 
@@ -113,14 +119,18 @@ def predict():
         return Response('JSON Array Error : Mismatched Columns', 400)
 
     try:
-        pred_signal = signal.predict(build_input(diff, 1000))
-        signal_group = pred_details(pred_signal, timestamp, 50, 29)
-        pred_wave = wave.predict(build_input(psi, 5000))
+        sig_input = build_input(diff, 1000)
+        sig_pred = signal.predict(torch.tensor(sig_input[None], dtype=torch.float)/255)
+        sig_group = pred_details(pred_signal, timestamp, 50, 29)
+        wave_input = build_input(psi, 5000)
+        wave_pred = wave.predict(torch.tensor(wave_input[None], dtype=torch.float)/255)
         wave_group = pred_details(pred_wave, timestamp, 50, 29)
     except Exception as e:
         return Response(e, 400)
 
     final_output = {"waves":wave_group, "signals":signal_group}
+
+
     return jsonify(final_output)
 
 

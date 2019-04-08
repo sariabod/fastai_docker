@@ -69,7 +69,4 @@ def build_input(vals, norm, raw=False):
         total = total.astype(int)
         data[k] = total
 
-    if raw:
-        return data.transpose()
-    else:
-        return torch.tensor(data.transpose()[None], dtype=torch.float)/255
+    return data.transpose()
